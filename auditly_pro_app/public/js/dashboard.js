@@ -883,10 +883,13 @@ ${escapeHtml(
         try {
 
             const response =
-                await fetch(
-                    `/api/audit?shop=${encodeURIComponent(shop)}`
-                );
-
+    await fetch(
+        `/api/audit?shop=${encodeURIComponent(shop)}`,
+        {
+            method: "POST"
+        }
+    );
+            
             if (!response.ok) {
 
                 throw new Error(
