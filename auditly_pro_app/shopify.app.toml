@@ -1,0 +1,31 @@
+name = "Auditly Pro v3"
+
+client_id = "c86866c785dbbb3a16a423ceb733f7cc"
+
+application_url = "https://app.auditlypro.com"
+
+embedded = true
+
+[access_scopes]
+
+scopes = "read_legal_policies,read_products,write_products,read_content,write_content,read_themes,write_themes"
+
+[auth]
+
+redirect_urls = [
+  "https://app.auditlypro.com/auth/callback"
+]
+
+[webhooks]
+
+api_version = "2026-04"
+
+[[webhooks.subscriptions]]
+
+compliance_topics = [
+  "customers/data_request",
+  "customers/redact",
+  "shop/redact"
+]
+
+uri = "/webhooks/compliance"
