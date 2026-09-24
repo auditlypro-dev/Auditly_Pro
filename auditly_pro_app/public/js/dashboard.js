@@ -835,7 +835,8 @@ ${escapeHtml(
     // RUN STORE AUDIT
     // ==========================================
 
-    async function runStoreAudit() {
+    async function runStoreAudit() 
+    {
 
         console.log(
             "🔍 Run Store Audit clicked"
