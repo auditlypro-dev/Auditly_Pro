@@ -5,7 +5,11 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     console.log("🚀 Auditly Pro dashboard.js loaded");
-
+console.log(
+    "Shopify App Bridge:",
+    window.shopify
+);
+    
     // ==========================================
     // ELEMENTS
     // ==========================================
