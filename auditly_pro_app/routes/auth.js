@@ -734,7 +734,321 @@ router.get(
 
     }
 );
+// ==========================================
+// Shopify Embedded App Token Exchange
+// ==========================================
 
+router.post(
+    "/token-exchange",
+    async (req, res) => {
+
+        try {
+
+            // ======================================
+            // Get Shopify App Bridge ID Token
+            // ======================================
+
+            const authorization =
+                req.headers.authorization || "";
+
+            if (
+                !authorization.startsWith("Bearer ")
+            ) {
+
+                console.error(
+                    "❌ NO SHOPIFY ID TOKEN RECEIVED"
+                );
+
+                return res
+                    .status(401)
+                    .json({
+                        success: false,
+                        error:
+                            "Shopify authentication token missing."
+                    });
+
+            }
+
+            const idToken =
+                authorization.substring(7);
+
+            // ======================================
+            // Verify ID Token
+            // ======================================
+
+            const payload =
+                jwt.verify(
+                    idToken,
+                    SHOPIFY_API_SECRET,
+                    {
+                        audience:
+                            SHOPIFY_API_KEY
+                    }
+                );
+
+            // ======================================
+            // Get Shopify Store From Token
+            // ======================================
+
+            const destination =
+                new URL(payload.dest);
+
+            const shop =
+                destination.hostname
+                    .toLowerCase();
+
+            if (!isValidShop(shop)) {
+
+                console.error(
+                    "❌ INVALID SHOP IN ID TOKEN:",
+                    shop
+                );
+
+                return res
+                    .status(401)
+                    .json({
+                        success: false,
+                        error:
+                            "Invalid Shopify store."
+                    });
+
+            }
+
+            console.log(
+                "🔐 SHOPIFY ID TOKEN VERIFIED:",
+                shop
+            );
+
+            // ======================================
+            // Exchange ID Token For Offline Token
+            // ======================================
+
+            const tokenBody =
+                new URLSearchParams({
+
+                    client_id:
+                        SHOPIFY_API_KEY,
+
+                    client_secret:
+                        SHOPIFY_API_SECRET,
+
+                    grant_type:
+                        "urn:ietf:params:oauth:grant-type:token-exchange",
+
+                    subject_token:
+                        idToken,
+
+                    subject_token_type:
+                        "urn:ietf:params:oauth:token-type:id_token",
+
+                    requested_token_type:
+                        "urn:shopify:params:oauth:token-type:offline-access-token",
+
+                    expiring:
+                        "1"
+
+                }).toString();
+
+            const response =
+                await fetch(
+
+                    `https://${shop}/admin/oauth/access_token`,
+
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/x-www-form-urlencoded",
+
+                            "Accept":
+                                "application/json"
+
+                        },
+
+                        body:
+                            tokenBody
+
+                    }
+
+                );
+
+            const tokenData =
+                await response.json();
+
+            // ======================================
+            // Handle Invalid / Expired ID Token
+            // ======================================
+
+            if (
+                response.status === 400
+            ) {
+
+                console.error(
+                    "❌ SHOPIFY ID TOKEN EXCHANGE REJECTED"
+                );
+
+                res.set(
+                    "X-Shopify-Retry-Invalid-Session-Request",
+                    "1"
+                );
+
+                return res
+                    .status(401)
+                    .json({
+                        success: false,
+                        error:
+                            "Shopify session expired. Please retry."
+                    });
+
+            }
+
+            if (!response.ok) {
+
+                console.error(
+                    "❌ SHOPIFY TOKEN EXCHANGE ERROR:",
+                    tokenData
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        success: false,
+                        error:
+                            "Shopify token exchange failed."
+                    });
+
+            }
+
+            // ======================================
+            // Verify Tokens Were Returned
+            // ======================================
+
+            if (
+                !tokenData.access_token ||
+                !tokenData.refresh_token
+            ) {
+
+                console.error(
+                    "❌ SHOPIFY DID NOT RETURN REQUIRED TOKENS"
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        success: false,
+                        error:
+                            "Shopify did not return the required tokens."
+                    });
+
+            }
+
+            // ======================================
+            // Calculate Expiration
+            // ======================================
+
+            const now =
+                Date.now();
+
+            const expiresAt =
+                new Date(
+                    now +
+                    (
+                        Number(
+                            tokenData.expires_in
+                        ) *
+                        1000
+                    )
+                ).toISOString();
+
+            let refreshTokenExpiresAt =
+                null;
+
+            if (
+                tokenData.refresh_token_expires_in
+            ) {
+
+                refreshTokenExpiresAt =
+                    new Date(
+                        now +
+                        (
+                            Number(
+                                tokenData.refresh_token_expires_in
+                            ) *
+                            1000
+                        )
+                    ).toISOString();
+
+            }
+
+            // ======================================
+            // Save New Tokens
+            // ======================================
+
+            await saveShop(
+
+                shop,
+
+                tokenData.access_token,
+
+                tokenData.refresh_token,
+
+                expiresAt,
+
+                refreshTokenExpiresAt
+
+            );
+
+            console.log(
+                "✅ NEW SHOPIFY TOKENS SAVED:",
+                shop
+            );
+
+            // ======================================
+            // Success
+            // ======================================
+
+            return res.json({
+
+                success:
+                    true,
+
+                shop:
+                    shop,
+
+                scope:
+                    tokenData.scope || null
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "❌ TOKEN EXCHANGE ERROR:",
+                error.message
+            );
+
+            return res
+                .status(401)
+                .json({
+
+                    success:
+                        false,
+
+                    error:
+                        "Shopify authentication failed."
+
+                });
+
+        }
+
+    }
+);
+
+// ==========================================
 // ==========================================
 // Authentication Test
 // ==========================================
