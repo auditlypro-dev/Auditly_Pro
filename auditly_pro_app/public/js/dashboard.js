@@ -316,9 +316,10 @@ console.log(
 
         try {
 
-            window.location.href =
-                `/billing/upgrade?shop=${encodeURIComponent(shop)}`;
-
+            window.open(
+    `/billing/upgrade?shop=${encodeURIComponent(shop)}`,
+    "_top"
+);
         } catch (error) {
 
             console.error(
