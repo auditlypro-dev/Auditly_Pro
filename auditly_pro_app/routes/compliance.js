@@ -1,5 +1,6 @@
 const express = require("express");
 const crypto = require("crypto");
+const { deleteShop } = require("../services/supabase");
 
 const router = express.Router();
 
