@@ -136,25 +136,56 @@ async function handleComplianceWebhook(req, res) {
     // SHOP REDACT
     // ------------------------------------------
 
-    if (
-        topic ===
-        "shop/redact"
-    ) {
+    
+if (
+    topic ===
+    "shop/redact"
+) {
 
-        console.log(
-            "🗑️ Shop redaction request received:",
-            payload.shop_domain
+    const shop =
+        payload.shop_domain;
+
+    console.log(
+        "🗑️ Shop redaction request received:",
+        shop
+    );
+
+    if (!shop) {
+
+        console.error(
+            "❌ Shop redaction request did not include a shop domain"
         );
 
-        // Shop-level data is stored in Supabase.
-        // Actual shop deletion will be handled
-        // in the next step.
+        return res
+            .status(400)
+            .send("Missing shop domain");
+    }
+
+    try {
+
+        await deleteShop(shop);
+
+        console.log(
+            "✅ Shop data permanently deleted:",
+            shop
+        );
 
         return res
             .status(200)
             .send("OK");
-    }
 
+    } catch (error) {
+
+        console.error(
+            "❌ SHOP REDACTION FAILED:",
+            error
+        );
+
+        return res
+            .status(500)
+            .send("Shop deletion failed");
+    }
+}
 
     // Unknown compliance topic
     return res
