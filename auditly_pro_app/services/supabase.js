@@ -123,11 +123,39 @@ async function getShop(shop) {
 }
 
 // ==========================================
+// Delete Shopify Store
+// ==========================================
+
+async function deleteShop(shop) {
+
+    const { error } = await supabase
+        .from("shops")
+        .delete()
+        .eq("shop", shop);
+
+    if (error) {
+
+        console.error(
+            "❌ SUPABASE DELETE SHOP ERROR:",
+            error
+        );
+
+        throw error;
+    }
+
+    console.log(
+        "🗑️ SHOP DELETED FROM SUPABASE:",
+        shop
+    );
+}
+
+// ==========================================
 // Export
 // ==========================================
 
 module.exports = {
     supabase,
     saveShop,
-    getShop
+    getShop,
+    deleteShop
 };
