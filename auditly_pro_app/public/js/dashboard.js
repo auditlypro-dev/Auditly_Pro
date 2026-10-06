@@ -5,7 +5,11 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     console.log("🚀 Auditly Pro dashboard.js loaded");
-
+console.log(
+    "Shopify App Bridge:",
+    window.shopify
+);
+    
     // ==========================================
     // ELEMENTS
     // ==========================================
@@ -312,9 +316,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            window.location.href =
-                `/billing/upgrade?shop=${encodeURIComponent(shop)}`;
-
+            window.open(
+    `/billing/upgrade?shop=${encodeURIComponent(shop)}`,
+    "_top"
+);
         } catch (error) {
 
             console.error(
@@ -835,7 +840,8 @@ ${escapeHtml(
     // RUN STORE AUDIT
     // ==========================================
 
-    async function runStoreAudit() {
+    async function runStoreAudit() 
+    {
 
         console.log(
             "🔍 Run Store Audit clicked"
@@ -995,19 +1001,66 @@ ${escapeHtml(
         );
 
     }
-
-    // ==========================================
+        // ==========================================
     // INITIALIZE DASHBOARD
     // ==========================================
 
-    checkServerStatus();
+    async function initializeDashboard() {
 
-    checkShopifyConnection();
+        try {
 
-    checkSubscription();
+            console.log(
+                "🔐 Starting Shopify token exchange..."
+            );
 
-    console.log(
-        "✅ Auditly Pro dashboard initialized"
-    );
+            const response =
+                await fetch(
+                    "/auth/token-exchange",
+                    {
+                        method: "POST"
+                    }
+                );
+
+            if (!response.ok) {
+
+                console.warn(
+                    "⚠️ Shopify token exchange was not completed:",
+                    response.status
+                );
+
+            } else {
+
+                const data =
+                    await response.json();
+
+                console.log(
+                    "✅ Shopify token exchange:",
+                    data
+                );
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "⚠️ Shopify token exchange error:",
+                error
+            );
+
+        }
+
+        await checkServerStatus();
+
+        await checkShopifyConnection();
+
+        await checkSubscription();
+
+        console.log(
+            "✅ Auditly Pro dashboard initialized"
+        );
+
+    }
+
+    initializeDashboard();
 
 });
