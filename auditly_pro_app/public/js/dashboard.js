@@ -196,68 +196,83 @@ console.log(
 
     async function checkSubscription() {
 
-        if (!subscriptionElement) {
-            return;
+    if (!subscriptionElement) {
+        return;
+    }
+
+    if (!shop) {
+
+        subscriptionElement.innerHTML =
+            "⚠️ Connect your Shopify store first.";
+
+        if (trialButton) {
+            trialButton.style.display = "";
         }
 
-        if (!shop) {
+        return;
+    }
 
-            subscriptionElement.innerHTML =
-                "⚠️ Connect your Shopify store first.";
+    try {
 
-            return;
-
-        }
-
-        try {
-
-            const response =
-                await fetch(
-                    `/billing/status?shop=${encodeURIComponent(shop)}`
-                );
-
-            if (!response.ok) {
-
-                throw new Error(
-                    `Billing status returned ${response.status}`
-                );
-
-            }
-
-            const data =
-                await response.json();
-
-            console.log(
-                "Subscription status:",
-                data
+        const response =
+            await fetch(
+                `/billing/status?shop=${encodeURIComponent(shop)}`
             );
 
-            if (
-                data.active === true ||
-                data.subscribed === true
-            ) {
+        if (!response.ok) {
 
-                subscriptionElement.innerHTML =
-                    "🟢 Auditly Pro subscription active";
-
-            } else {
-
-                subscriptionElement.innerHTML =
-                    "🟡 No active subscription";
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Subscription status error:",
-                error
+            throw new Error(
+                `Billing status returned ${response.status}`
             );
 
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "Subscription status:",
+            data
+        );
+
+        if (
+            data.active === true ||
+            data.subscribed === true
+        ) {
+
             subscriptionElement.innerHTML =
-                "🟡 Subscription status unavailable";
+                "🟢 Auditly Pro subscription active";
+
+            if (trialButton) {
+                trialButton.style.display = "none";
+            }
+
+        } else {
+
+            subscriptionElement.innerHTML =
+                "🟡 No active subscription";
+
+            if (trialButton) {
+                trialButton.style.display = "";
+            }
 
         }
+
+    } catch (error) {
+
+        console.error(
+            "Subscription status error:",
+            error
+        );
+
+        subscriptionElement.innerHTML =
+            "🟡 Subscription status unavailable";
+
+        if (trialButton) {
+            trialButton.style.display = "";
+        }
+
+    }
 
     }
 
