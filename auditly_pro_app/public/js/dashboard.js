@@ -277,28 +277,54 @@ console.log(
     }
 
     // ==========================================
-    // CONNECT SHOPIFY STORE
-    // ==========================================
+// CONNECT SHOPIFY STORE
+// ==========================================
 
-    function connectShopify() {
+function connectShopify() {
 
-        console.log(
-            "Connect Shopify clicked"
+    console.log("Connect Shopify clicked");
+
+    let storeName = shop;
+
+    // Ask for store name if missing
+    if (!storeName) {
+
+        storeName = prompt(
+            "Enter your Shopify store address:\nExample: your-store.myshopify.com"
         );
 
-        if (shop) {
-
-            window.location.href =
-                `/auth/install?shop=${encodeURIComponent(shop)}`;
-
-            return;
-
-        }
-
-        window.location.href =
-            "/auth/install";
-
     }
+
+    // Stop if user cancels
+    if (!storeName) {
+        return;
+    }
+
+    // Clean up store name
+    storeName = storeName
+        .trim()
+        .toLowerCase()
+        .replace(/^https?:\/\//, "")
+        .replace(/\/.*$/, "");
+
+    // Validate Shopify store domain
+    const validShop =
+        /^[a-z0-9][a-z0-9-]*\.myshopify\.com$/.test(storeName);
+
+    if (!validShop) {
+
+        alert(
+            "Invalid Shopify store address.\n\nPlease enter an address like:\nyour-store.myshopify.com"
+        );
+
+        return;
+    }
+
+    // Begin Shopify installation
+    window.location.href =
+        `/auth/install?shop=${encodeURIComponent(storeName)}`;
+
+}
 
     // ==========================================
     // START FREE TRIAL
