@@ -1459,8 +1459,8 @@ function calculateOverallScore(
         );
 
 
-    return Math.round(
-        total / scores.length
+    return Math.floor(
+    total / scores.length
     );
 
 }
