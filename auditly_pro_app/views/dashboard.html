@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,34 +11,33 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Auditly Pro v2 Dashboard
-    </title>
+    <title>Auditly Pro Dashboard</title>
 
-   <link
-    rel="stylesheet"
-    href="/css/styles.css"
->
+    <link
+        rel="stylesheet"
+        href="/css/styles.css"
+    >
 
-<meta
-    name="shopify-api-key"
-    content="c86866c785dbbb3a16a423ceb733f7cc"
->
+    <meta
+        name="shopify-api-key"
+        content="c86866c785dbbb3a16a423ceb733f7cc"
+    >
 
-<script
-    src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
-></script> 
+    <script
+        src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
+    ></script>
 
 </head>
 
-
 <body>
 
-<header>
+<header class="dashboard-header">
 
-    <h1>
-        🚀 Auditly Pro
-    </h1>
+    <img
+        src="/images/auditly-pro-logo.jpg"
+        alt="Auditly Pro"
+        class="logo-top"
+    >
 
     <p>
         Shopify Store Compliance, SEO & Optimization Audits
@@ -45,19 +45,13 @@
 
 </header>
 
-
 <main>
 
-
-    <!-- ==========================================
-         SYSTEM STATUS
-    =========================================== -->
+    <!-- SYSTEM STATUS -->
 
     <section class="card">
 
-        <h2>
-            System Status
-        </h2>
+        <h2>System Status</h2>
 
         <div id="status">
             Checking server...
@@ -65,17 +59,11 @@
 
     </section>
 
-
-
-    <!-- ==========================================
-         SHOPIFY CONNECTION
-    =========================================== -->
+    <!-- SHOPIFY CONNECTION -->
 
     <section class="card">
 
-        <h2>
-            Shopify Store Connection
-        </h2>
+        <h2>Shopify Store Connection</h2>
 
         <div id="shop">
             Checking Shopify connection...
@@ -92,20 +80,14 @@
 
     </section>
 
-
-
-    <!-- ==========================================
-         BILLING
-    =========================================== -->
+    <!-- BILLING -->
 
     <section
         class="card"
         id="billingCard"
     >
 
-        <h2>
-            💳 Auditly Pro Subscription
-        </h2>
+        <h2>💳 Auditly Pro Subscription</h2>
 
         <div id="subscription">
             Checking subscription status...
@@ -122,15 +104,11 @@
             "
         >
 
-            <strong>
-                Auditly Pro
-            </strong>
+            <strong>Auditly Pro</strong>
 
             <br><br>
 
-            <strong>
-                $27/month
-            </strong>
+            <strong>$27/month</strong>
 
             <br>
 
@@ -149,24 +127,16 @@
 
         <div
             id="billingMessage"
-            style="
-                margin-top:15px;
-            "
+            style="margin-top:15px;"
         ></div>
 
     </section>
 
-
-
-    <!-- ==========================================
-         STORE AUDIT
-    =========================================== -->
+    <!-- STORE AUDIT -->
 
     <section class="card">
 
-        <h2>
-            Store Audit
-        </h2>
+        <h2>Store Audit</h2>
 
         <p>
             Analyze your Shopify store for compliance,
@@ -182,17 +152,11 @@
 
     </section>
 
-
-
-    <!-- ==========================================
-         AUDIT RESULTS
-    =========================================== -->
+    <!-- AUDIT RESULTS -->
 
     <section class="card">
 
-        <h2>
-            Audit Results
-        </h2>
+        <h2>Audit Results</h2>
 
         <div id="audit-results">
             No audit has been started.
@@ -200,12 +164,17 @@
 
     </section>
 
-
 </main>
 
+<!-- FOOTER -->
 
+<footer class="dashboard-footer">
 
-<footer>
+    <img
+        src="/images/auditly-pro-logo.jpg"
+        alt="Auditly Pro"
+        class="logo-bottom"
+    >
 
     <p>
         © 2026 Auditly Pro
@@ -213,17 +182,12 @@
 
 </footer>
 
-
-
-<!-- ==========================================
-     DASHBOARD JAVASCRIPT
-=========================================== -->
+<!-- DASHBOARD JAVASCRIPT -->
 
 <script
     src="/js/dashboard.js"
     defer
 ></script>
-
 
 </body>
 
